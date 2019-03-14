@@ -1,24 +1,22 @@
 package com.github.mikephil.charting.stockChart.data;
 
+import android.util.Log;
 import android.util.SparseArray;
-
 import com.github.mikephil.charting.stockChart.model.TimeDataModel;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.text.ParseException;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
 import static com.github.mikephil.charting.utils.DataTimeUtil.secToDateForFiveDay;
 
 /**
  * 分时数据解析
  */
 
-public class TimeDataManage {
+public class TimeDataManage  {
     private ArrayList<TimeDataModel> realTimeDatas = new ArrayList<>();//分时数据
     private double baseValue = 0;//分时图基准值
     private double permaxmin = 0;//分时图价格最大区间值
@@ -36,8 +34,10 @@ public class TimeDataManage {
     /**
      * 外部传JSONObject解析获得分时数据集
      */
-    public void parseTimeData(JSONObject object, String assetId, double preClosePrice) {
+    public void parseTimeData(StockData stockData,JSONObject object, String assetId, double preClosePrice) {
         this.assetId = assetId;
+
+
         if (object != null) {
             realTimeDatas.clear();
             fiveDayXLabels.clear();
@@ -46,16 +46,22 @@ public class TimeDataManage {
             int index = 0;
             preClose = Double.isNaN(object.optDouble("preClose")) ? 0 : object.optDouble("preClose");
             JSONArray data = object.optJSONArray("data");
+
             if (data != null) {
                 for (int i = 0; i < data.length(); i++) {
                     TimeDataModel timeDatamodel = new TimeDataModel();
                     timeDatamodel.setTimeMills(data.optJSONArray(i).optLong(0, 0L));
+                    Log.d("bbbbbbbbbbbbbbb1",data.optJSONArray(i).optLong(0, 0L)+"");
                     timeDatamodel.setNowPrice(Double.isNaN(data.optJSONArray(i).optDouble(1)) ? 0 : data.optJSONArray(i).optDouble(1));
+                    Log.d("bbbbbbbbbbbbbbb2", String.valueOf(Double.isNaN(data.optJSONArray(i).optDouble(1)) ? 0 : data.optJSONArray(i).optDouble(1)));
                     timeDatamodel.setAveragePrice(Double.isNaN(data.optJSONArray(i).optDouble(2)) ? 0 : data.optJSONArray(i).optDouble(2));
+                    Log.d("bbbbbbbbbbbbbbb3", String.valueOf(Double.isNaN(data.optJSONArray(i).optDouble(2)) ? 0 : data.optJSONArray(i).optDouble(2)));
                     timeDatamodel.setVolume(Double.valueOf(data.optJSONArray(i).optString(3)).intValue());
+                    Log.d("bbbbbbbbbbbbbbb4", String.valueOf(Double.valueOf(data.optJSONArray(i).optString(3)).intValue()));
                     timeDatamodel.setOpen(Double.isNaN(data.optJSONArray(i).optDouble(4)) ? 0 : data.optJSONArray(i).optDouble(4));
+                    Log.d("bbbbbbbbbbbbbbb5", String.valueOf(Double.isNaN(data.optJSONArray(i).optDouble(4)) ? 0 : data.optJSONArray(i).optDouble(4)));
                     timeDatamodel.setPreClose(preClose == 0 ? (preClosePrice == 0 ? timeDatamodel.getOpen() : preClosePrice) : preClose);
-
+                    Log.d("bbbbbbbbbbbbbbb6", String.valueOf(preClose == 0 ? (preClosePrice == 0 ? timeDatamodel.getOpen() : preClosePrice) : preClose));
                     if (i == 0) {
                         preClose = timeDatamodel.getPreClose();
                         mAllVolume = timeDatamodel.getVolume();

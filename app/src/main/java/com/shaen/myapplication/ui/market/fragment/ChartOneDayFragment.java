@@ -1,5 +1,6 @@
 package com.shaen.myapplication.ui.market.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.stockChart.CoupleChartGestureListener;
+import com.github.mikephil.charting.stockChart.data.StockData;
 import com.github.mikephil.charting.stockChart.data.TimeDataManage;
 import com.github.mikephil.charting.stockChart.view.OneDayView;
 import com.shaen.myapplication.R;
@@ -25,6 +27,7 @@ import butterknife.Unbinder;
 /**
  * 分时页
  */
+@SuppressLint("ValidFragment")
 public class ChartOneDayFragment extends BaseFragment {
 
     @BindView(R.id.chart)
@@ -34,9 +37,15 @@ public class ChartOneDayFragment extends BaseFragment {
     private boolean land;//是否横屏
     private TimeDataManage kTimeData = new TimeDataManage();
     private JSONObject object;
+    StockData stockData;
 
-    public static ChartOneDayFragment newInstance(boolean land) {
-        ChartOneDayFragment fragment = new ChartOneDayFragment();
+    @SuppressLint("ValidFragment")
+    public ChartOneDayFragment(StockData sss){
+        this.stockData=sss;
+    }
+
+    public static ChartOneDayFragment newInstance(boolean land,StockData ss1) {
+        ChartOneDayFragment fragment = new ChartOneDayFragment(ss1);
         Bundle bundle = new Bundle();
         bundle.putBoolean("landscape", land);
         fragment.setArguments(bundle);
@@ -61,7 +70,7 @@ public class ChartOneDayFragment extends BaseFragment {
         }
 
         //上证指数代码000001.IDX.SH
-        kTimeData.parseTimeData(object,"000001.IDX.SH",0);
+        kTimeData.parseTimeData(stockData,object,"000001.IDX.SH",0);
         chart.setDataToChart(kTimeData);
 
         //非横屏页单击转横屏页

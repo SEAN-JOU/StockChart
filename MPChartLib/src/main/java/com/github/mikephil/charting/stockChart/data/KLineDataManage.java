@@ -109,7 +109,7 @@ public class KLineDataManage {
     /**
      * 解析K线数据
      */
-    public void parseKlineData(JSONObject object, String assetId,boolean landscape) {
+    public void parseKlineData(StockData stockData,JSONObject object, String assetId,boolean landscape) {
         this.assetId = assetId;
         this.landscape = landscape;
         if (object != null) {

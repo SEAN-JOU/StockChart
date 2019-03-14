@@ -1,10 +1,10 @@
-package com.shaen.myapplication.ui.main;
+package com.github.mikephil.charting.stockChart.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class StockData1 implements Serializable {
+public class StockData implements Serializable {
 
     public String error_code;
     public ArrayList<StockDataContent> data;

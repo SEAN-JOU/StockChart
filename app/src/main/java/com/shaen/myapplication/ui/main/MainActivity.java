@@ -7,16 +7,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.github.mikephil.charting.stockChart.data.StockData;
 import com.google.gson.Gson;
 import com.shaen.myapplication.R;
 import com.shaen.myapplication.application.MyApplication;
 import com.shaen.myapplication.ui.market.activity.StockDetailActivity;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.io.IOException;
-import java.util.Collections;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -26,6 +23,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
+import static com.shaen.myapplication.application.MyApplication.API_KEY;
+import static com.shaen.myapplication.application.MyApplication.API_URL_STOCK;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -51,23 +51,17 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         OkHttpClient okHttpClient = new OkHttpClient();
                         RequestBody formBody = new FormBody.Builder()
-                                .add("code", "cn_300228")
-                                .add("start", "20190301")
-                                .add("end", "20190312")
-                                .add("stat", "1")
-                                .add("order", "D")
-                                .add("period", "d")
-                                .add("callback", "historySearchHandler")
-                                .add("rt", "json")
-//                                .add("response", "json")
-//                                .add("date", "20180120")
-//                                .add("stockNo", "0050")
+                                .add("appid", API_KEY)
+                                .add("code", "000001")//(必填)證券代碼
+                                .add("index", "true")//(必填)code是否為指數
+                                .add("k_type", "day")//(必填)day=日線,week=周線,month=月線,5=五分,15=十五分,30=三十分,60=六十分
+                                .add("fq_type", "qfq")//(必填)除權前qfq 除權後hfq
+                                .add("start_date", "2019-03-01")//(非必填)開始日期YYYY-MM-DD
+                                .add("end_date", "2019-03-14")//(非必填)結束日期YYYY-MM-DD
                                 .build();
 
                         Request request = new Request.Builder()
-
-//                                .url("http://www.twse.com.tw/exchangeReport/STOCK_DAY?")
-                                .url("http://q.stock.sohu.com/hisHq?code=cn_601318&start=20190301&end=20190312&stat=1&order=D&period=d&callback=historySearchHandler&rt=json")
+                                .url(API_URL_STOCK)
                                 .post(formBody)
                                 .build();
 
@@ -82,21 +76,25 @@ public class MainActivity extends AppCompatActivity {
                                 String string = response.body().string();
                                 Log.d("aaaaaaaaaa", string);
                                 Gson gson = new Gson();
-                                try {
-                                    JSONArray jsonArray = new JSONArray(string);
-//                                    StockData stockData = gson.fromJson(jsonArray.get(0).toString(), StockData.class);
-                                    Log.d("aaaaaaaaaa", jsonArray.get(0).toString());
-                                    StockData1 stockData1 = gson.fromJson(jsonArray.get(0).toString(), StockData1.class);
-                                    Collections.reverse(stockData1.hq);
-                                    for (int i = 0; i < stockData1.hq.size(); i++) {
-                                        Log.d("aaaaaaaaaa", stockData1.hq.get(i).get(0));
-                                        for (int a = 0; a < stockData1.hq.get(i).size(); a++) {
-                                            Log.d("aaaaaaaaaa", stockData1.hq.get(i).get(a));
-                                        }
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                StockData stockData = gson.fromJson(string, StockData.class);
+//                                    Collections.reverse(stockData.data);
+//                                    for (int i = 0; i < stockData.data.size(); i++) {
+//                                        Log.d("aaaaaaaaaa", stockData.data.get(i).close);
+//                                        Log.d("aaaaaaaaaa", stockData.data.get(i).date);
+//                                        Log.d("aaaaaaaaaa", stockData.data.get(i).open);
+//                                        Log.d("aaaaaaaaaa", stockData.data.get(i).low);
+//                                        Log.d("aaaaaaaaaa", stockData.data.get(i).high);
+//                                        Log.d("aaaaaaaaaa", stockData.data.get(i).volume);
+//                                        Log.d("aaaaaaaaaa", stockData.data.get(i).code);
+//                                    }
+                                    Bundle bundle =new Bundle();
+                                    bundle.putSerializable("data",stockData);
+                                    Intent intent = new Intent(MainActivity.this,StockDetailActivity.class);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+
+
+
                             }
                         });
                     }

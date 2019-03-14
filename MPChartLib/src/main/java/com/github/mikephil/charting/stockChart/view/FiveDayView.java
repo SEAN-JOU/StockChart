@@ -222,7 +222,8 @@ public class FiveDayView extends BaseView {
                 barChart.highlightValue(new Highlight(h.getX(), h.getDataSetIndex(), -1));
                 if (mHighlightValueSelectedListener != null) {
                     mHighlightValueSelectedListener.onDayHighlightValueListener(mData, e.getXIndex(), true);
-                }
+                    mData.resetTimeData();
+            }
             }
 
             @Override

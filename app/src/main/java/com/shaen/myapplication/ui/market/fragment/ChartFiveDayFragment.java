@@ -1,23 +1,22 @@
 package com.shaen.myapplication.ui.market.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.github.mikephil.charting.stockChart.CoupleChartGestureListener;
+import com.github.mikephil.charting.stockChart.data.StockData;
 import com.github.mikephil.charting.stockChart.data.TimeDataManage;
 import com.github.mikephil.charting.stockChart.view.FiveDayView;
 import com.shaen.myapplication.R;
 import com.shaen.myapplication.common.data.ChartData;
 import com.shaen.myapplication.ui.base.BaseFragment;
 import com.shaen.myapplication.ui.market.activity.StockDetailLandActivity;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -25,6 +24,7 @@ import butterknife.Unbinder;
 /**
  * 分时页
  */
+@SuppressLint("ValidFragment")
 public class ChartFiveDayFragment extends BaseFragment {
 
     @BindView(R.id.chart)
@@ -34,9 +34,15 @@ public class ChartFiveDayFragment extends BaseFragment {
     private boolean land;//是否横屏
     private TimeDataManage kTimeData = new TimeDataManage();
     private JSONObject object;
+    StockData stockData;
 
-    public static ChartFiveDayFragment newInstance(boolean land) {
-        ChartFiveDayFragment fragment = new ChartFiveDayFragment();
+    @SuppressLint("ValidFragment")
+    public ChartFiveDayFragment(StockData sss){
+        this.stockData=sss;
+    }
+
+    public static ChartFiveDayFragment newInstance(boolean land, StockData ss1) {
+        ChartFiveDayFragment fragment = new ChartFiveDayFragment(ss1);
         Bundle bundle = new Bundle();
         bundle.putBoolean("landscape", land);
         fragment.setArguments(bundle);
@@ -62,7 +68,7 @@ public class ChartFiveDayFragment extends BaseFragment {
         }
 
         //上证指数代码000001.IDX.SH
-        kTimeData.parseTimeData(object,"000001.IDX.SH",0);
+        kTimeData.parseTimeData(stockData,object,"000001.IDX.SH",0);
         chart.setDataToChart(kTimeData);
 
         //非横屏页单击转横屏页
@@ -88,6 +94,9 @@ public class ChartFiveDayFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         land = getArguments().getBoolean("landscape");
+
+
+
     }
 
     @Override

@@ -11,6 +11,9 @@ import com.zhouyou.http.cache.converter.SerializableDiskConverter;
 
 
 public class MyApplication extends BaseApp {
+
+    public static final String API_KEY ="e20cfebeba86efcb28ceefa492d534a8";
+    public static final String API_URL_STOCK="https://api.shenjian.io/?";
     @Override
     public void onCreate() {
         super.onCreate();

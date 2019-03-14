@@ -3,7 +3,6 @@ package com.github.mikephil.charting.stockChart;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;

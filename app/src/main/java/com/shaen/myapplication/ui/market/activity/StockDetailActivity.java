@@ -12,7 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-
+import com.github.mikephil.charting.stockChart.data.StockData;
 import com.shaen.myapplication.R;
 import com.shaen.myapplication.common.adapter.SimpleFragmentPagerAdapter;
 import com.shaen.myapplication.common.data.Constants;
@@ -36,11 +36,25 @@ public class StockDetailActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    StockData stockData;
+    Bundle bundle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_detail);
         ButterKnife.bind(this);
+
+        try {
+            bundle = getIntent().getExtras();
+            StockData stockData = (StockData) bundle.getSerializable("data");
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
 
 
         toolbar.setTitle("图表");
@@ -75,13 +89,16 @@ public class StockDetailActivity extends AppCompatActivity {
                 return true;
             }
         });
-        Fragment[] fragments = {ChartOneDayFragment.newInstance(false), ChartFiveDayFragment.newInstance(false),
-                ChartKLineFragment.newInstance(1, false), ChartKLineFragment.newInstance(7, false),
-                ChartKLineFragment.newInstance(30, false)};
+        Fragment[] fragments = {ChartOneDayFragment.newInstance(false,stockData), ChartFiveDayFragment.newInstance(false,stockData),
+                ChartKLineFragment.newInstance(1, false,stockData), ChartKLineFragment.newInstance(7, false,stockData),
+                ChartKLineFragment.newInstance(30, false,stockData)};
         String[] titles = {"分时", "五日", "日K", "周K", "月K"};
         viewPager.setOffscreenPageLimit(fragments.length);
         viewPager.setAdapter(new SimpleFragmentPagerAdapter(getSupportFragmentManager(), fragments, titles));
         tabLayout.setupWithViewPager(viewPager);
     }
+
+
+
 
 }
